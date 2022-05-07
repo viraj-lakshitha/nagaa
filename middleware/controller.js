@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const Snake = require("./model");
 
 exports.getSnakes = (req, res, next) => {
-  console.log("Getting all snakes from database"); // TODO : Remove
   Snake.find()
     .select(
       "_id color description firstAid headShape image name otherName pattern scientificName venomLevel"
@@ -19,6 +18,23 @@ exports.getSnakes = (req, res, next) => {
       });
     });
 };
+
+exports.getSnakesById = (req, res, next) => {
+    const userInput = req.params.id
+    Snake.find({ _id : userInput })
+    .select("_id color description firstAid headShape image name otherName pattern scientificName venomLevel")
+    .exec()
+    .then(data => {
+        res.status(200).json({
+            result: data
+        })
+    })
+    .catch(err => {
+        res.status(500).json({
+            error: "unable to fetch data from database"
+        })
+    })
+}
 
 exports.createSnake = (req, res, next) => {
   const newSnake = new Snake({
